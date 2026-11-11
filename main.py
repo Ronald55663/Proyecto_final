@@ -16,13 +16,12 @@ print("Gracias, vales mil nunca cambies.\n")
 
 
 print("\n***MENU DE OPCIONES***")
-print("1. Quieres las distancias en kilometros o millas")
+print("1. calcular distancias entre dos destinos")
 print("2. zona horaria de cada destino")
 print("3. quieres calcular mas de dos destinos")
 print("4. todas las opciones")
 print("5. Salir")
 opcion = input("Seleccione una opción: ")
-
 
 if opcion == "1":
     nombre_ciudad = input("Ingrese el nombre de la ciudad: ")
