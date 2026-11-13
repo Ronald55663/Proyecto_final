@@ -35,15 +35,6 @@ def pedir_unidad():
 
 #Creamos la funcion para pedir una ciudad al usuario
 def pedir_ciudad(tipo):
-    """
-    Pide al usuario una ciudad y valida que no esté vacía ni sean solo espacios.
-
-    Args:
-        tipo (str): Etiqueta que indica si es 'origen' o 'destino'.
-
-    Returns:
-        str: Nombre de la ciudad ya validado.
-    """
     # Pedimos la ciudad al usuario hasta que ingrese una válida.
     # Usamos un bucle while para repetir la solicitud hasta que el usuario ingrese una ciudad válida.
     while True:
@@ -59,27 +50,14 @@ def pedir_ciudad(tipo):
             print("El campo no puede estar vacío. Por favor, inténtalo de nuevo.")
 
 # creamos la funcion para buscar un lugar utilizando la API
-    def buscar_lugar(ciudad, tipo):
-        """ Busca una ciudad utilizando la API. Si no encuentra la ciudad, permite ingresar otra.
-        
-        Args:
-        ciudad: nombre de la ciudad que queremos buscar.
-        tipo: indica si estamos buscando'origen' o 'destino' 
-
-        Returns:
-            dict: Datos del lugar (nombre, pais, lat, lon).
-        """
+def buscar_lugar(ciudad, tipo):
     # Si la ciudad no se encuentra, se le pide al usuario que ingrese otra.
-    
     # iniciamos un bucle para buscar la ciudad hasta que obtengamos un resultado valido
-
     while True:
         lugar = obtener_coordenadas(ciudad)
-
-        # Si lugar no es None, la búsqueda funcionó y lo devolvemos.
-    if lugar:
-        return lugar
-
-    else:
+    # Si lugar no es None, la búsqueda funcionó y lo devolvemos.
+        if lugar:
+            return lugar
+        else:
             print(f"Escribe otra ciudad para el {tipo}.")
-ciudad = pedir_ciudad(tipo) 
+        ciudad = pedir_ciudad(tipo) 
