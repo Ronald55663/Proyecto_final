@@ -17,7 +17,7 @@ print("Gracias, vales mil nunca cambies.\n")
 #Creamos la funcion para mostrar el menu de opciones
 def mostrar_menu():
     print("\n***MENU DE OPCIONES***")
-    print("1.Calcular la distancia entre dos ciudades")
+    print("1. Calcular la distancia entre dos ciudades")
     print("2. Salir")
 
 #Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
@@ -40,7 +40,7 @@ def pedir_ciudad(tipo):
     while True:
         # .strip() quita los espacios del principio y del final. Así, si el
         # usuario solo escribe espacios, el texto queda vacío y lo rechazamos.
-        ciudad = input(f"Ciudad de origen o destino? {tipo}: ").strip()
+        ciudad = input(f"Ciudad de {tipo}: ").strip()
 
         # Verificamos si el usuario escribió algo.
         # Si el usuario no escribió nada, le pedimos que vuelva a intentar.
