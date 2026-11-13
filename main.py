@@ -93,8 +93,7 @@ def calcular_distancia():
 def main():
     
     # la bienvenida se imprime una sola vez al inicio del programa.
-    print("=== Calculadora de Distancias ===")
-    print("¡Bienvenidos!")
+    print("*** Calculadora de Distancias ***")
 
     # usamos un bucle while True para mostrar el menú repetidamente hasta que el usuario elija salir.
     while True:
@@ -104,7 +103,7 @@ def main():
         if opcion == "1":
             calcular_distancia()
         elif opcion == "2":
-            print("¡Gracias por usar Camino a mi casa! Hasta luego.")
+            print("¡Gracias por usar nuetro programa! Esperamos sea de tu agrado!.")
             break
         else:
             print("Opción inválida. Por favor, elige 1 o 2.")
