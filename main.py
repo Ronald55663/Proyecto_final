@@ -14,29 +14,21 @@ print("\nHola, bienvenido a nuestro proyecto final, titulado “ import nostalgi
 print("esperamos sea de tu agrado y dejes un tip si te gusto y si no, deja tu feedback para mejorar.") 
 print("Gracias, vales mil nunca cambies.\n")
 
+#Creamos la funcion para mostrar el menu de opciones
+def mostrar_menu():
+    print("\n***MENU DE OPCIONES***")
+    print("1.Calcular la distancia entre dos ciudades")
+    print("2. Salir")
 
-print("\n***MENU DE OPCIONES***")
-print("1. Quieres las distancias en kilometros o millas")
-print("2. zona horaria de cada destino")
-print("3. quieres calcular mas de dos destinos")
-print("4. todas las opciones")
-print("5. Salir")
-opcion = input("Seleccione una opción: ")
-
-if opcion == "1":
-    nombre_ciudad = input("Ingrese el nombre de la primera ciudad: ")
-    coordenadas = obtener_coordenadas(nombre_ciudad)
-    nombre_ciudad_destino = input("Ingrese el nombre de la segunda ciudad: ")
-    coordenadas_destino = obtener_coordenadas(nombre_ciudad_destino)
-    if coordenadas and coordenadas_destino:
-        print(f"Coordenadas de {coordenadas['nombre']}, {coordenadas['pais']}:")
-        print(f"Latitud: {coordenadas['lat']}, Longitud: {coordenadas['lon']}")
-        print(f"Coordenadas de {coordenadas_destino['nombre']}, {coordenadas_destino['pais']}:")
-        print(f"Latitud: {coordenadas_destino['lat']}, Longitud: {coordenadas_destino['lon']}")
-
-        
-elif opcion == "5":
-    print("Saliendo...")
-    sys.exit()
-else:
-    print("Opción no válida.")
+#Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
+def pedir_unidad():
+    #Creamo un bucle whilr para que se repita hasta que el usuario ingrese una opcion valida
+    while True:
+        unidad = input("Que unidad quieres usar? (km/millas): ").strip().lower() #.strip para quitar espacios y .lower para pasar a minusculas.
+        #Se crea un if para validar que la unidad ingresada sea valida y si no lo es, le pide al usuario que vuelva a intentar
+        if unidad in ["km", "kilómetros", "kilometros"]:
+            return "Kilometros"
+        elif unidad in  ["millas", "mi"]:
+            return "millas"
+        else:
+            print("Unidad no válida. Por favor, ingrese 'km' o 'millas'.")
