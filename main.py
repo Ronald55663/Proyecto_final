@@ -33,6 +33,31 @@ def pedir_unidad():
         else:
             print("Unidad no válida. Por favor, ingrese 'km' o 'millas'.")
 
+#Creamos la funcion para pedir una ciudad al usuario
+def pedir_ciudad(tipo):
+    """
+    Pide al usuario una ciudad y valida que no esté vacía ni sean solo espacios.
+
+    Args:
+        tipo (str): Etiqueta que indica si es 'origen' o 'destino'.
+
+    Returns:
+        str: Nombre de la ciudad ya validado.
+    """
+    # Pedimos la ciudad al usuario hasta que ingrese una válida.
+    # Usamos un bucle while para repetir la solicitud hasta que el usuario ingrese una ciudad válida.
+    while True:
+        # .strip() quita los espacios del principio y del final. Así, si el
+        # usuario solo escribe espacios, el texto queda vacío y lo rechazamos.
+        ciudad = input(f"Ciudad de origen o destino? {tipo}: ").strip()
+
+        # Verificamos si el usuario escribió algo.
+        # Si el usuario no escribió nada, le pedimos que vuelva a intentar.
+        if ciudad:
+            return ciudad
+        else: 
+            print("El campo no puede estar vacío. Por favor, inténtalo de nuevo.")
+
 # creamos la funcion para buscar un lugar utilizando la API
     def buscar_lugar(ciudad, tipo):
         """ Busca una ciudad utilizando la API. Si no encuentra la ciudad, permite ingresar otra.
