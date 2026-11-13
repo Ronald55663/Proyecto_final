@@ -34,7 +34,7 @@ def pedir_unidad():
             print("Unidad no válida. Por favor, ingrese 'km' o 'millas'.")
 
 # creamos la funcion para buscar un lugar utilizando la API
-def buscar_lugar(ciudad, tipo):
+    def buscar_lugar(ciudad, tipo):
         """ Busca una ciudad utilizando la API. Si no encuentra la ciudad, permite ingresar otra.
         
         Args:
@@ -48,13 +48,13 @@ def buscar_lugar(ciudad, tipo):
     
     # iniciamos un bucle para buscar la ciudad hasta que obtengamos un resultado valido
 
-while True:
+    while True:
         lugar = obtener_coordenadas(ciudad)
 
         # Si lugar no es None, la búsqueda funcionó y lo devolvemos.
-if lugar:
-    return lugar
+    if lugar:
+        return lugar
 
-else:
+    else:
             print(f"Escribe otra ciudad para el {tipo}.")
 ciudad = pedir_ciudad(tipo) 
