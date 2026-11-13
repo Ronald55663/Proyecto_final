@@ -22,7 +22,7 @@ def mostrar_menu():
 
 #Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
 def pedir_unidad():
-    #Creamo un bucle whilr para que se repita hasta que el usuario ingrese una opcion valida
+    #Creamos un bucle while para que se repita hasta que el usuario ingrese una opcion valida
     while True:
         unidad = input("Que unidad quieres usar? (km/millas): ").strip().lower() #.strip para quitar espacios y .lower para pasar a minusculas.
         #Se crea un if para validar que la unidad ingresada sea valida y si no lo es, le pide al usuario que vuelva a intentar
@@ -32,3 +32,29 @@ def pedir_unidad():
             return "millas"
         else:
             print("Unidad no válida. Por favor, ingrese 'km' o 'millas'.")
+
+# creamos la funcion para buscar un lugar utilizando la API
+def buscar_lugar(ciudad, tipo):
+        """ Busca una ciudad utilizando la API. Si no encuentra la ciudad, permite ingresar otra.
+        
+        Args:
+        ciudad: nombre de la ciudad que queremos buscar.
+        tipo: indica si estamos buscando'origen' o 'destino' 
+
+        Returns:
+            dict: Datos del lugar (nombre, pais, lat, lon).
+        """
+    # Si la ciudad no se encuentra, se le pide al usuario que ingrese otra.
+    
+    # iniciamos un bucle para buscar la ciudad hasta que obtengamos un resultado valido
+
+while True:
+        lugar = obtener_coordenadas(ciudad)
+
+        # Si lugar no es None, la búsqueda funcionó y lo devolvemos.
+if lugar:
+    return lugar
+
+else:
+            print(f"Escribe otra ciudad para el {tipo}.")
+ciudad = pedir_ciudad(tipo) 

@@ -19,3 +19,5 @@ Es un proyecto desarrollado en python que permite comparar distancia entre dos l
 -Clonar el repositorio en VSC:https://github.com/Ronald55663/Proyecto_final.git
 -Correr el programa “nostalgia.py”.
 
+# Funcionamiento de la API:
+El proyecto utiliza Open-Meteo Ge
