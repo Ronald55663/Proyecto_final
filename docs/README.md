@@ -24,10 +24,9 @@ El proyecto utiliza Open-Meteo Geocoding API para buscar iformacion geografica d
 
 La API permite obtener:
 
--Nombre de la ciudad.
--Pais.
 -Latitud.
 -Longitud
--Zona horaria. 
 
-La imformacion recibida se procesa P
+# Creacion de funciones: 
+Se crearon las funciones para guardar la informacion de el usuario 
+

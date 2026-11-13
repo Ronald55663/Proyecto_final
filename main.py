@@ -61,3 +61,56 @@ def buscar_lugar(ciudad, tipo):
         else:
             print(f"Escribe otra ciudad para el {tipo}.")
         ciudad = pedir_ciudad(tipo) 
+
+#Creamos la funcion para calcular la distancia entre dos ciudades 
+def calcular_distancia():
+    
+    # Entrada y validación de datos
+    origen = pedir_ciudad("origen")
+    destino = pedir_ciudad("destino")
+    unidad = pedir_unidad()
+
+    #Resumen de lo que el programa mostrará ANTES de consultar la API.
+    print("\n--- Resumen ---")
+    print(f"Origen:  {origen}")
+    print(f"Destino: {destino}")
+    print(f"Unidad:  {unidad}")
+    print("Consultando datos...")
+
+    #Consulta a la API para obtener las coordenadas de las ciudades.
+    coordenadas_origen = buscar_lugar(origen, "origen")
+    coordenadas_destino = buscar_lugar(destino, "destino")
+
+    # Mostramos los datos que devolvió la API 
+    # lo que escribió el usuario, para que pueda comprobar que la API encontró
+    # el lugar correcto (hay varias ciudades con el mismo nombre en el mundo).
+    # coordenadas_origen['lat'] busca la clave 'lat' dentro del diccionario.
+    print(f"Origen:  {coordenadas_origen['nombre']}, {coordenadas_origen['pais']} → "
+          f"lat {coordenadas_origen['lat']}, lon {coordenadas_origen['lon']}")
+    print(f"Destino: {coordenadas_destino['nombre']}, {coordenadas_destino['pais']} → "
+          f"lat {coordenadas_destino['lat']}, lon {coordenadas_destino['lon']}")
+
+def main():
+    
+    # la bienvenida se imprime una sola vez al inicio del programa.
+    print("=== Calculadora de Distancias ===")
+    print("¡Bienvenidos!")
+
+    # usamos un bucle while True para mostrar el menú repetidamente hasta que el usuario elija salir.
+    while True:
+        mostrar_menu()
+        opcion = input("Elige una opción: ").strip()
+    # según la opción elegida por el usuario, se ejecuta la acción correspondiente
+        if opcion == "1":
+            calcular_distancia()
+        elif opcion == "2":
+            print("¡Gracias por usar Camino a mi casa! Hasta luego.")
+            break
+        else:
+            print("Opción inválida. Por favor, elige 1 o 2.")
+
+
+# Esta línea hace que main() se ejecute solo cuando corremos este archivo
+# directamente (python main.py), y no cuando otro archivo lo importa.
+if __name__ == "__main__":
+    main()
