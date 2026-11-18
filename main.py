@@ -1,3 +1,8 @@
+# ==========================================
+# PROYECTO FINAL : import nostalgia: ¿Falta mucho para llegar a casa?
+# Ronald Medina y Christian Mendoza  
+# ==========================================
+
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from api import obtener_coordenadas
