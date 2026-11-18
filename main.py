@@ -7,6 +7,7 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from api import obtener_coordenadas
 
+
 print("\n***MENSAJE DE BIENVENIDA***")
 print("\nHola, bienvenido a nuestro proyecto final, titulado “ import nostalgia: ¿Falta mucho para llegar a casa?")
 print("esperamos sea de tu agrado y dejes un tip si te gusto y si no, deja tu feedback para mejorar.") 

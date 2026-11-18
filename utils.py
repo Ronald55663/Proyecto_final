@@ -1,7 +1,7 @@
 import math
 
 #Creamos la funcion para calcular la distancia de dos ciudades usando la formula de Haversine
-def calcular_distancia(lat1, lon1, lat2, lon2):
+def calcular_distancia(lat1=40.4168, lon1=-3.7038, lat2=48.8566, lon2=2.3522):
     # Convertimos las coordenadas de grados a radianes
     lat1_rad = math.radians(lat1)
     lon1_rad = math.radians(lon1)
@@ -22,3 +22,6 @@ def calcular_distancia(lat1, lon1, lat2, lon2):
     #Guardamos el resultado con el return
     return distancia_km
 
+#Mandamos llamar la funcion calcular_distancia e imprimimos el resultado con 2 decimales
+resultado = calcular_distancia()
+print(f"{resultado:.2f} km.")
