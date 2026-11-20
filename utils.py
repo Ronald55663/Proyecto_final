@@ -4,7 +4,7 @@ import math
 
 velocidad_avion = 950 
 velocidad_auto = 100
-km_a_millas = 0.621371  #creamos una variable para convertir km a millas 
+km_x_millas = 0.621371  #creamos una variable para convertir km a millas 
 
 #Creamos la funcion para calcular la distancia de dos ciudades usando la formula de Haversine
 def calcular_distancia(lat1=40.4168, lon1=-3.7038, lat2=48.8566, lon2=2.3522):
@@ -40,8 +40,8 @@ print(f"Tiempo estimado en avión: {tiempo_avion:.2f} horas.")
 print(f"Tiempo estimado en auto: {tiempo_auto:.2f} horas.")
 
 # creamos la funcion para calcular de km a millas 
-def convertir_km_a_millas(distancia_km):
-    return distancia_km * km_a_millas
+def km_a_millas(distancia_km):
+    return distancia_km * km_x_millas
 
 #creamos otra funcion para calcular el tiempo de viaje  
 def calcular_tiempo_viaje(distancia_km, velocidad): 

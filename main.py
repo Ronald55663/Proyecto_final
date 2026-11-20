@@ -98,8 +98,8 @@ def mostrar_resumen(origen, destino, distancia_km, unidad_preferida):
         texto_distancia = f"{distancia_km:,.2f} km  ({distancia_mi:,.2f} millas)"
 
     print("\n========== RESUMEN DEL VIAJE ==========")
-    print(f"Origen:   {origen['nombre']}, {origen['pais']}" f"({origen['lat']:.4f}, {origen['lon']:.4f})")
-    print(f"Destino:  {destino['nombre']}, {destino['pais']}" f"({destino['lat']:.4f}, {destino['lon']:.4f})\n")
+    print(f"Origen:   {origen.nombre}, {origen.pais} " f"({origen.latitud:.4f}, {origen.longitud:.4f})")
+    print(f"Destino:  {destino.nombre}, {destino.pais} " f"({destino.latitud:.4f}, {destino.longitud:.4f})\n")
     print(f"Distancia en línea recta: {texto_distancia}\n")
     print(f"Tiempo estimado en avión ({int(velocidad_avion)} km/h):  {tiempo_avion_txt}")
     print(f"Tiempo estimado en auto  ({int(velocidad_auto)} km/h):   {tiempo_auto_txt}\n")
