@@ -6,8 +6,8 @@
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from api import obtener_coordenadas
+from ciudad import Ciudad
 from utils import (
-    calcular_distancia,
     calcular_tiempo_viaje,
     formatear_tiempo,
     km_a_millas,
@@ -80,9 +80,9 @@ def buscar_lugar(ciudad, tipo):
             print(f"Escribe otra ciudad para el {tipo}.")
         ciudad = pedir_ciudad(tipo) 
 """
-
+#Creamos la funcion que muestra el resumen estructurado del viaje con ambas unidades y tiempos
 def mostrar_resumen(origen, destino, distancia_km, unidad_preferida):
-    """Muestra el resumen estructurado del viaje con ambas unidades y tiempos."""
+    
     distancia_mi = km_a_millas(distancia_km)
 
     # Calculamos tiempos en horas decimales y los pasamos a formato "X h YY min"
@@ -134,24 +134,34 @@ def calcular_viaje(unidad_preferida):
         print(f"Error de red: {error}")
         return
 
+    # Creamos un objeto Ciudad para origen y otro para destino a partir de la API
+    origen = Ciudad(
+        datos_origen["nombre"],
+        datos_origen["pais"],
+        datos_origen["lat"],
+        datos_origen["lon"],
+    )
+    destino = Ciudad(
+        datos_destino["nombre"],
+        datos_destino["pais"],
+        datos_destino["lat"],
+        datos_destino["lon"],
+    )
+
     # Verificamos si origen y destino tienen exactamente las mismas coordenadas
     mismo_lugar = (
-        datos_origen["lat"] == datos_destino["lat"]
-        and datos_origen["lon"] == datos_destino["lon"]
+        origen.latitud == destino.latitud
+        and origen.longitud == destino.longitud
     )
 
     if mismo_lugar:
         print("\nAviso: El origen y el destino son iguales (distancia de 0.00 km).")
         distancia_km = 0.0
     else:
-        distancia_km = calcular_distancia(
-            datos_origen["lat"],
-            datos_origen["lon"],
-            datos_destino["lat"],
-            datos_destino["lon"],
-        )
+        # Usamos el metodo distancia_a() de la clase Ciudad en vez de llamar directo a utils
+        distancia_km = origen.distancia_a(destino)
 
-    mostrar_resumen(datos_origen, datos_destino, distancia_km, unidad_preferida)
+    mostrar_resumen(origen, destino, distancia_km, unidad_preferida)
 
 def main():
     
@@ -167,7 +177,11 @@ def main():
         opcion = input("Elige una opción: ").strip()
 
         if opcion == "1":
-            calcular_viaje(unidad_preferida)
+            try:
+                calcular_viaje(unidad_preferida)
+            except Exception as error:
+                # Red de seguridad para evitar que un error inesperado cierre el programa
+                print(f"Ocurrió un error inesperado: {error}")
         elif opcion == "2":
             unidad_preferida = pedir_unidad()
             print(f"Unidad actualizada a: {unidad_preferida}")
@@ -176,7 +190,6 @@ def main():
             break
         else:
             print("Opción inválida. Por favor, elige 1, 2 o 3.")
-
 
 # Esta línea hace que main() se ejecute solo cuando corremos este archivo
 # directamente (python main.py), y no cuando otro archivo lo importa.
