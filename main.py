@@ -6,6 +6,14 @@
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from api import obtener_coordenadas
+from utils import (
+    calcular_distancia,
+    calcular_tiempo_viaje,
+    formatear_tiempo,
+    km_a_millas,
+    velocidad_auto,
+    velocidad_avion,
+)
 
 
 print("\n***MENSAJE DE BIENVENIDA***")
@@ -14,10 +22,11 @@ print("esperamos sea de tu agrado y dejes un tip si te gusto y si no, deja tu fe
 print("Gracias, vales mil nunca cambies.\n")
 
 #Creamos la funcion para mostrar el menu de opciones
-def mostrar_menu():
+def mostrar_menu(unidad_actual):
     print("\n***MENU DE OPCIONES***")
-    print("1. Calcular la distancia entre dos ciudades")
-    print("2. Salir")
+    print("1. Calcular la distancia y tiempo entre dos ciudades")
+    print(f"2. Cambiar unidad preferida (actual: {unidad_actual})")
+    print("3. Salir")
 
 #Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
 def pedir_unidad():
@@ -32,7 +41,7 @@ def pedir_unidad():
         else:
             print("Unidad no válida. Por favor, ingrese 'km' o 'millas'.")
 
-#Creamos la funcion para pedir una ciudad al usuario
+# Creamos la funcion para pedir una ciudad al usuario y asegurarnos que escriba algo valido y no este vacio
 def pedir_ciudad(tipo):
     # Pedimos la ciudad al usuario hasta que ingrese una válida.
     # Usamos un bucle while para repetir la solicitud hasta que el usuario ingrese una ciudad válida.
@@ -45,9 +54,19 @@ def pedir_ciudad(tipo):
         # Si el usuario no escribió nada, le pedimos que vuelva a intentar.
         if ciudad:
             return ciudad
-        else: 
+        else:
             print("El campo no puede estar vacío. Por favor, inténtalo de nuevo.")
 
+# Creamos la funcion para pedir un pais al usuario y asegurarnos que escriba algo valido y no este vacio
+def pedir_pais(tipo):
+    """Pide el país del origen o destino y evita entradas vacías."""
+    while True:
+        pais = input(f"País de {tipo}: ").strip()
+        if pais:
+            return pais
+        else:
+            print("El campo no puede estar vacío. Por favor, inténtalo de nuevo.")
+"""
 # creamos la funcion para buscar un lugar utilizando la API
 def buscar_lugar(ciudad, tipo):
     # Si la ciudad no se encuentra, se le pide al usuario que ingrese otra.
@@ -60,52 +79,103 @@ def buscar_lugar(ciudad, tipo):
         else:
             print(f"Escribe otra ciudad para el {tipo}.")
         ciudad = pedir_ciudad(tipo) 
+"""
 
-#Creamos la funcion para calcular la distancia entre dos ciudades 
-def calcular_distancia():
-    
-    # Entrada y validación de datos
-    origen = pedir_ciudad("origen")
-    destino = pedir_ciudad("destino")
-    unidad = pedir_unidad()
+def mostrar_resumen(origen, destino, distancia_km, unidad_preferida):
+    """Muestra el resumen estructurado del viaje con ambas unidades y tiempos."""
+    distancia_mi = km_a_millas(distancia_km)
 
-    #Resumen de lo que el programa mostrará ANTES de consultar la API.
-    print("\n--- Resumen ---")
-    print(f"Origen:  {origen}")
-    print(f"Destino: {destino}")
-    print(f"Unidad:  {unidad}")
-    print("Consultando datos...")
+    # Calculamos tiempos en horas decimales y los pasamos a formato "X h YY min"
+    horas_avion = calcular_tiempo_viaje(distancia_km, velocidad_avion)
+    horas_auto = calcular_tiempo_viaje(distancia_km, velocidad_auto)
+    tiempo_avion_txt = formatear_tiempo(horas_avion)
+    tiempo_auto_txt = formatear_tiempo(horas_auto)
 
-    #Consulta a la API para obtener las coordenadas de las ciudades.
-    coordenadas_origen = buscar_lugar(origen, "origen")
-    coordenadas_destino = buscar_lugar(destino, "destino")
+    # Mostramos primero la unidad preferida del usuario y también la equivalencia
+    if unidad_preferida == "millas":
+        texto_distancia = f"{distancia_mi:,.2f} millas  ({distancia_km:,.2f} km)"
+    else:
+        texto_distancia = f"{distancia_km:,.2f} km  ({distancia_mi:,.2f} millas)"
 
-    # Mostramos los datos que devolvió la API 
-    # lo que escribió el usuario, para que pueda comprobar que la API encontró
-    # el lugar correcto (hay varias ciudades con el mismo nombre en el mundo).
-    # coordenadas_origen['lat'] busca la clave 'lat' dentro del diccionario.
-    print(f"Origen:  {coordenadas_origen['nombre']}, {coordenadas_origen['pais']} → "
-          f"lat {coordenadas_origen['lat']}, lon {coordenadas_origen['lon']}")
-    print(f"Destino: {coordenadas_destino['nombre']}, {coordenadas_destino['pais']} → "
-          f"lat {coordenadas_destino['lat']}, lon {coordenadas_destino['lon']}")
+    print("\n========== RESUMEN DEL VIAJE ==========")
+    print(f"Origen:   {origen['nombre']}, {origen['pais']}" f"({origen['lat']:.4f}, {origen['lon']:.4f})")
+    print(f"Destino:  {destino['nombre']}, {destino['pais']}" f"({destino['lat']:.4f}, {destino['lon']:.4f})\n")
+    print(f"Distancia en línea recta: {texto_distancia}\n")
+    print(f"Tiempo estimado en avión ({int(velocidad_avion)} km/h):  {tiempo_avion_txt}")
+    print(f"Tiempo estimado en auto  ({int(velocidad_auto)} km/h):   {tiempo_auto_txt}\n")
+    print("- La distancia es una aproximación en línea recta.")
+    print("=======================================")
+
+# Creamos la función para pedir datos, consultar la API, calcular y mostrar resultados
+def calcular_viaje(unidad_preferida):
+    """Gestiona la entrada de origen/destino, consulta la API y muestra el resumen."""
+    # Pedimos origen y destino (ciudad y país) validando que no estén vacíos
+    ciudad_origen = pedir_ciudad("origen")
+    pais_origen = pedir_pais("origen")
+
+    ciudad_destino = pedir_ciudad("destino")
+    pais_destino = pedir_pais("destino")
+
+    print("\nConsultando datos...")
+
+    # Consultamos la API separando errores de red (ConnectionError)
+    # de ubicaciones no encontradas (datos is None). Si falla, regresamos al menú.
+    try:
+        datos_origen = obtener_coordenadas(ciudad_origen, pais_origen)
+        if datos_origen is None:
+            print("Ciudad no encontrada")
+            return
+
+        datos_destino = obtener_coordenadas(ciudad_destino, pais_destino)
+        if datos_destino is None:
+            print("Ciudad no encontrada")
+            return
+    except ConnectionError as error:
+        print(f"Error de red: {error}")
+        return
+
+    # Verificamos si origen y destino tienen exactamente las mismas coordenadas
+    mismo_lugar = (
+        datos_origen["lat"] == datos_destino["lat"]
+        and datos_origen["lon"] == datos_destino["lon"]
+    )
+
+    if mismo_lugar:
+        print("\nAviso: El origen y el destino son iguales (distancia de 0.00 km).")
+        distancia_km = 0.0
+    else:
+        distancia_km = calcular_distancia(
+            datos_origen["lat"],
+            datos_origen["lon"],
+            datos_destino["lat"],
+            datos_destino["lon"],
+        )
+
+    mostrar_resumen(datos_origen, datos_destino, distancia_km, unidad_preferida)
 
 def main():
     
     # la bienvenida se imprime una sola vez al inicio del programa.
     print("*** Calculadora de Distancias ***")
 
-    # usamos un bucle while True para mostrar el menú repetidamente hasta que el usuario elija salir.
+# Unidad por defecto del proyecto (en kilómetros)
+    unidad_preferida = "km"
+
+    # Bucle principal del menú hasta que el usuario elija salir
     while True:
-        mostrar_menu()
+        mostrar_menu(unidad_preferida)
         opcion = input("Elige una opción: ").strip()
-    # según la opción elegida por el usuario, se ejecuta la acción correspondiente
+
         if opcion == "1":
-            calcular_distancia()
+            calcular_viaje(unidad_preferida)
         elif opcion == "2":
-            print("¡Gracias por usar nuetro programa! Esperamos sea de tu agrado!.")
+            unidad_preferida = pedir_unidad()
+            print(f"Unidad actualizada a: {unidad_preferida}")
+        elif opcion == "3":
+            print("¡Gracias por usar nuestro programa! ¡Esperamos sea de tu agrado!")
             break
         else:
-            print("Opción inválida. Por favor, elige 1 o 2.")
+            print("Opción inválida. Por favor, elige 1, 2 o 3.")
 
 
 # Esta línea hace que main() se ejecute solo cuando corremos este archivo
