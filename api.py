@@ -49,6 +49,7 @@ def obtener_coordenadas(ciudad, pais):
         datos = respuesta.json()
     except requests.exceptions.Timeout:
         # Se dispara si el servidor tarda más de 10 segundos en responder
+        # El from none oculta el detalle técnico original para que el error se vea limpio y claro
         raise ConnectionError("la API tardó demasiado en responder.") from None
     except requests.exceptions.RequestException:
         # Cubre falta de internet, fallo de DNS o problemas generales de conexión

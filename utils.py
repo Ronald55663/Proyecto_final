@@ -4,6 +4,7 @@ import math
 
 velocidad_avion = 950 
 velocidad_auto = 100
+km_a_millas = 0.621371  #creamos una variable para convertir km a millas 
 
 #Creamos la funcion para calcular la distancia de dos ciudades usando la formula de Haversine
 def calcular_distancia(lat1=40.4168, lon1=-3.7038, lat2=48.8566, lon2=2.3522):
@@ -27,15 +28,23 @@ def calcular_distancia(lat1=40.4168, lon1=-3.7038, lat2=48.8566, lon2=2.3522):
     #Guardamos el resultado con el return
     return distancia_km
 
-#Mandamos llamar la funcion calcular_distancia e imprimimos el resultado con 2 decimales
+# Mandamos llamar la funcion calcular_distancia 
+# imprimimos el resultado con 2 decimales
 resultado = calcular_distancia()
-print(f"{resultado:.2f} km.")
+print(f"{resultado:.2f} km.") 
 
 tiempo_avion = resultado/velocidad_avion
 tiempo_auto = resultado/velocidad_auto
 
 print(f"Tiempo estimado en avión: {tiempo_avion:.2f} horas.")
 print(f"Tiempo estimado en auto: {tiempo_auto:.2f} horas.")
+# creamos la funcion para calcular de km a millas 
+def convertir_km_a_millas(distancia_km):
+    return distancia_km * km_a_millas
+
+#creamos otra funcion para calcular el tiempo de viaje  
+def calcular_tiempo_viaje(distancia_km, velocidad): 
+    return distancia_km / velocidad
 
 # creamos funcion para darle formato al tiempo en horas y minutos 
 def formatear_tiempo(horas):
@@ -49,5 +58,16 @@ def formatear_tiempo(horas):
     return f"{h} h {m:02d} min"             # el divmod hace la division entera (//) y guarda el residuo (%)
                                             # con la h guardamos (//) y con la m guardamos el residuo(%)
 
-# imprimimos el resultado para ver que la funcion esta correctamente implementada
-print(formatear_tiempo(3.5)) 
+#imprimimos el resultado para ver que la funcion esta correctamente implementada
+"print(formatear_tiempo(3.5))" 
+
+# Solo se ejecuta si corres utils.py directamente, no al importarlo desde main.py
+if __name__ == "__main__":
+    resultado = calcular_distancia()
+    print(f"{resultado:.2f} km.")
+
+    tiempo_avion = calcular_tiempo_viaje(resultado, velocidad_avion)
+    tiempo_auto = calcular_tiempo_viaje(resultado, velocidad_auto)
+
+    print(f"Tiempo estimado en avión: {formatear_tiempo(tiempo_avion)}")
+    print(f"Tiempo estimado en auto: {formatear_tiempo(tiempo_auto)}")
