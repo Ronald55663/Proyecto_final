@@ -74,6 +74,7 @@ def obtener_coordenadas(ciudad, pais):
                 "pais": lugar.get("country"),
                 "lat": lugar.get("latitude"),
                 "lon": lugar.get("longitude"),
+                "timezone": lugar.get("timezone"),
             }
 
     # Si no hubo resultados o ninguno coincidió con el país, devolvemos None
