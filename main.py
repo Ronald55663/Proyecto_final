@@ -23,8 +23,10 @@ print("\nHola, bienvenido a nuestro proyecto final, titulado “ import nostalgi
 print("esperamos sea de tu agrado y dejes un tip si te gusto y si no, deja tu feedback para mejorar.") 
 print("Gracias, vales mil nunca cambies.\n")
 
-#Creamos la funcion para mostrar el menu de opciones
+
 def mostrar_menu(unidad_actual):
+    """Creamos la funcion para mostrar el menu de opciones """  
+
     print("\n***MENU DE OPCIONES***")
     print("1. Calcular la distancia y tiempo entre dos ciudades")
     print("2. Calcular diferencia horaria entre dos ciudades")
@@ -32,8 +34,10 @@ def mostrar_menu(unidad_actual):
     print(f"4. Cambiar unidad preferida (actual: {unidad_actual})")
     print("5. Salir")
 
-#Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
+
 def pedir_unidad():
+    """Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido."""
+
     #Creamos un bucle while para que se repita hasta que el usuario ingrese una opcion valida
     while True:
         unidad = input("Que unidad quieres usar? (km/millas): ").strip().lower() #.strip para quitar espacios y .lower para pasar a minusculas.
@@ -45,8 +49,10 @@ def pedir_unidad():
         else:
             print("Unidad no válida. Por favor, ingrese 'km' o 'millas'.")
 
-# Creamos la funcion para pedir una ciudad al usuario y asegurarnos que escriba algo valido y no este vacio
+
 def pedir_ciudad(tipo):
+    """Creamos la funcion para pedir una ciudad al usuario y asegurarnos que escriba algo valido y no este vacio"""
+
     # Pedimos la ciudad al usuario hasta que ingrese una válida.
     # Usamos un bucle while para repetir la solicitud hasta que el usuario ingrese una ciudad válida.
     while True:
@@ -61,9 +67,9 @@ def pedir_ciudad(tipo):
         else:
             print("El campo no puede estar vacío. Por favor, inténtalo de nuevo.")
 
-# Creamos la funcion para pedir un pais al usuario y asegurarnos que escriba algo valido y no este vacio
+
 def pedir_pais(tipo):
-    """Pide el país del origen o destino y evita entradas vacías."""
+    """Creamos la funcion para pedir un pais al usuario y asegurarnos que escriba algo valido y no este vacio"""
     while True:
         pais = input(f"País de {tipo}: ").strip()
         if pais:
@@ -84,9 +90,9 @@ def buscar_lugar(ciudad, tipo):
             print(f"Escribe otra ciudad para el {tipo}.")
         ciudad = pedir_ciudad(tipo) 
 """
-#Creamos la funcion que muestra el resumen estructurado del viaje con ambas unidades y tiempos
 def mostrar_resumen(origen, destino, distancia_km, unidad_preferida):
-    
+    """Creamos la funcion que muestra el resumen estructurado del viaje con ambas unidades y tiempos"""
+
     distancia_mi = km_a_millas(distancia_km)
 
     # Calculamos tiempos en horas decimales y los pasamos a formato "X h YY min"
@@ -110,9 +116,10 @@ def mostrar_resumen(origen, destino, distancia_km, unidad_preferida):
     print("- La distancia es una aproximación en línea recta.")
     print("=======================================")
 
-# Creamos la función para pedir datos, consultar la API, calcular y mostrar resultados
+
 def calcular_viaje(unidad_preferida):
-    """Gestiona la entrada de origen/destino, consulta la API y muestra el resumen."""
+    """Creamos la función para pedir datos, consultar la API, calcular y mostrar resultados"""
+    
     # Pedimos origen y destino (ciudad y país) validando que no estén vacíos
     ciudad_origen = pedir_ciudad("origen")
     pais_origen = pedir_pais("origen")
@@ -169,8 +176,10 @@ def calcular_viaje(unidad_preferida):
 
     mostrar_resumen(origen, destino, distancia_km, unidad_preferida)
 
-#Esta funcion es para consultar ciudades y mostrar la diferencia horaria.
+
 def extension_diferencia_horaria():
+    """Esta funcion es para consultar hora local entre dos ciudades y mostrar la diferencia horaria actual."""
+
     ciudad_origen = pedir_ciudad("origen")
     pais_origen = pedir_pais("origen")
     ciudad_destino = pedir_ciudad("destino")
@@ -239,9 +248,9 @@ def extension_diferencia_horaria():
     else:
         print(f"Diferencia horaria: {destino.nombre} tiene la misma hora que {origen.nombre}.")
 
-#Con esta funcion creamos un bucle para que el usuario ingrese destinos hasta que escriba "listo"
-# y ordenamos los resultados del mas cercano al mas lejano
+
 def extension_destinos_multiples(unidad_actual):
+    """Calcula y ordena distancias y tiempos desde un origen hacia varios destinos."""
 
     # Pedimos y validamos primero la ciudad de origen
     ciudad_origen = pedir_ciudad("origen")
@@ -325,6 +334,8 @@ def extension_destinos_multiples(unidad_actual):
         print(f"{indice}. {destino.nombre}, {destino.pais} -> {texto_distancia} | Avión: {t_avion} | Auto: {t_auto}")
 
 def main():
+    """Ejecuta el ciclo principal del menú interactivo de la aplicación."""
+
     
     # la bienvenida se imprime una sola vez al inicio del programa.
     print("*** Calculadora de Distancias ***")
