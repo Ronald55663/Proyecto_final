@@ -25,7 +25,12 @@ class Ciudad:
         self.pais = pais
         self.latitud = latitud
         self.longitud = longitud
-        self.timezone = timezone
+        self.timezone = (
+            timezone.strip()
+            if isinstance(timezone, str) and timezone.strip()
+            else "UTC"
+        )
+                            
 
     def distancia_a(self, otra):
         """
@@ -59,9 +64,10 @@ class Ciudad:
                 return None
 
             return (offset_otra - offset_propio).total_seconds() / 3600
-        except ZoneInfoNotFoundError:
-            # Evita que una zona horaria desconocida rompa el programa
-            return None
+        except ZoneInfoNotFoundError as error:
+         # Evita que una zona horaria desconocida rompa el programa
+         print(f"Detalle de zona horaria: {error}")
+         return None
 
     def __str__(self):
         """Devuelve un texto legible con nombre, país y coordenadas."""
@@ -71,8 +77,8 @@ class Ciudad:
 
 if __name__ == "__main__":
     # Prueba rápida para comprobar que la clase funciona tal como se espera
-    origen = Ciudad("San Marcos", "Guatemala", 14.9667, -91.7944)
-    destino = Ciudad("Salt Lake City", "Estados Unidos", 40.7608, -111.8910)
+    origen = Ciudad("San Marcos", "Guatemala", 14.9667, -91.7944, "America/Guatemala")
+    destino = Ciudad("Salt Lake City", "Estados Unidos", 40.7608, -111.8910, "America/Denver")
     print(origen)
     print(f"{origen.distancia_a(destino):.2f} km")
     print(f"Diferencia horaria: {origen.diferencia_horaria_con(destino)} horas")

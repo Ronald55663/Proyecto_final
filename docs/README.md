@@ -17,6 +17,8 @@ Es un proyecto desarrollado en python que permite comparar distancia entre dos l
 
 # Como instalar y ejecutar:
 -Clonar el repositorio en VSC:https://github.com/Ronald55663/Proyecto_final.git
+-Instalar tzdata desde la terminal (python -m pip install tzdata)
+
 -Correr el programa “nostalgia.py”.
 
 # Funcionamiento de la API:
