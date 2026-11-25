@@ -28,8 +28,9 @@ def mostrar_menu(unidad_actual):
     print("\n***MENU DE OPCIONES***")
     print("1. Calcular la distancia y tiempo entre dos ciudades")
     print("2. Calcular diferencia horaria entre dos ciudades")
-    print(f"3. Cambiar unidad preferida (actual: {unidad_actual})")
-    print("4. Salir")
+    print("3. Calcular múltiples destinos desde un origen")
+    print(f"4. Cambiar unidad preferida (actual: {unidad_actual})")
+    print("5. Salir")
 
 #Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
 def pedir_unidad():
@@ -238,6 +239,91 @@ def extension_diferencia_horaria():
     else:
         print(f"Diferencia horaria: {destino.nombre} tiene la misma hora que {origen.nombre}.")
 
+#Con esta funcion creamos un bucle para que el usuario ingrese destinos hasta que escriba "listo"
+# y ordenamos los resultados del mas cercano al mas lejano
+def extension_destinos_multiples(unidad_actual):
+
+    # Pedimos y validamos primero la ciudad de origen
+    ciudad_origen = pedir_ciudad("origen")
+    pais_origen = pedir_pais("origen")
+
+    print("\nConsultando ciudad de origen...")
+    try:
+        datos_origen = obtener_coordenadas(ciudad_origen, pais_origen)
+        if datos_origen is None:
+            print(f"No se encontró la ciudad de origen: '{ciudad_origen}, {pais_origen}'.")
+            return
+    except ConnectionError as error:
+        print(f"Error de red al consultar el origen: {error}")
+        return
+
+    origen = Ciudad(
+        datos_origen["nombre"],
+        datos_origen["pais"],
+        datos_origen["lat"],
+        datos_origen["lon"],
+        datos_origen.get("timezone", "UTC"),
+    )
+
+    destinos_calculados = []
+    print("\nIngresa destinos uno por uno. Escribe 'listo' en la ciudad para terminar.")
+
+    # Bucle hasta que el usuario escriba 'listo'
+    while True:
+        entrada_destino = input("\nCiudad de destino (o escribe 'listo' para finalizar): ").strip()
+        if not entrada_destino:
+            print("La ciudad de destino no puede estar vacía.")
+            continue
+
+        # Condición de salida del bucle (insensible a mayúsculas y espacios)
+        if entrada_destino.lower() == "listo":
+            break
+
+        pais_destino = pedir_pais("destino")
+
+        try:
+            datos_destino = obtener_coordenadas(entrada_destino, pais_destino)
+            if datos_destino is None:
+                print(f"Destino omitido: no se encontró '{entrada_destino}, {pais_destino}'.")
+                continue
+
+            destino = Ciudad(
+                datos_destino["nombre"],
+                datos_destino["pais"],
+                datos_destino["lat"],
+                datos_destino["lon"],
+                datos_destino.get("timezone", "UTC"),
+            )
+
+            distancia_km = origen.distancia_a(destino)
+            destinos_calculados.append((destino, distancia_km))
+            print(f"Agregado: {destino.nombre}, {destino.pais} ({distancia_km:.2f} km).")
+        except ConnectionError as error:
+            # Si falla la red en un destino puntual, avisamos y seguimos con los demás
+            print(f"Destino omitido por error de red en '{entrada_destino}': {error}")
+            continue
+
+    if not destinos_calculados:
+        print("\nNo se agregaron destinos válidos para calcular.")
+        return
+
+    # Ordenamos de menor a mayor distancia usando sorted() y una función lambda
+    # Investigamos sobre la funcion de key=lambda, la cual sirve para crear una pequeña funcion en una sola linea,
+    # recibe un elemento llamado item y devuelve el elemento en posicion 1.
+    #  
+    destinos_ordenados = sorted(destinos_calculados, key=lambda item: item[1])
+
+    print(f"\n=== DESTINOS DESDE {origen.nombre.upper()} (MÁS CERCANO A MÁS LEJANO) ===")
+    for indice, (destino, distancia_km) in enumerate(destinos_ordenados, start=1):
+        if unidad_actual.lower() in ("mi", "millas", "miles"):
+            texto_distancia = f"{km_a_millas(distancia_km):.2f} millas"
+        else:
+            texto_distancia = f"{distancia_km:.2f} km"
+
+        t_avion = formatear_tiempo(calcular_tiempo_viaje(distancia_km, velocidad_avion))
+        t_auto = formatear_tiempo(calcular_tiempo_viaje(distancia_km, velocidad_auto))
+        print(f"{indice}. {destino.nombre}, {destino.pais} -> {texto_distancia} | Avión: {t_avion} | Auto: {t_auto}")
+
 def main():
     
     # la bienvenida se imprime una sola vez al inicio del programa.
@@ -263,13 +349,18 @@ def main():
             except Exception as error:
                 print(f"Ocurrió un error inesperado en diferencia horaria: {error}")
         elif opcion == "3":
+            try:
+                extension_destinos_multiples(unidad_preferida)
+            except Exception as error:
+                print(f"Ocurrió un error inesperado en destinos múltiples: {error}")
+        elif opcion == "4":
             unidad_preferida = pedir_unidad()
             print(f"Unidad actualizada a: {unidad_preferida}")
-        elif opcion == "4":
+        elif opcion == "5":
             print("¡Gracias por usar nuestro programa! ¡Esperamos sea de tu agrado!")
             break
         else:
-            print("Opción inválida. Por favor, elige 1, 2 o 3.")
+            print("Opción inválida. Por favor, elige 1, 2, 3, 4 o 5.")
 
 # Esta línea hace que main() se ejecute solo cuando corremos este archivo
 # directamente (python main.py), y no cuando otro archivo lo importa.
