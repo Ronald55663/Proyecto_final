@@ -28,17 +28,6 @@ def calcular_distancia(lat1=40.4168, lon1=-3.7038, lat2=48.8566, lon2=2.3522):
     #Guardamos el resultado con el return
     return distancia_km
 
-# Mandamos llamar la funcion calcular_distancia 
-# imprimimos el resultado con 2 decimales
-resultado = calcular_distancia()
-print(f"{resultado:.2f} km.") 
-
-tiempo_avion = resultado/velocidad_avion
-tiempo_auto = resultado/velocidad_auto
-
-print(f"Tiempo estimado en avión: {tiempo_avion:.2f} horas.")
-print(f"Tiempo estimado en auto: {tiempo_auto:.2f} horas.")
-
 # creamos la funcion para calcular de km a millas 
 def km_a_millas(distancia_km):
     return distancia_km * km_x_millas
@@ -58,12 +47,11 @@ def formatear_tiempo(horas):
     h, m = divmod(total_minutos, 60)        # así nunca aparece '60 min'
     return f"{h} h {m:02d} min"             # el divmod hace la division entera (//) y guarda el residuo (%)
                                             # con la h guardamos (//) y con la m guardamos el residuo(%)
-"""
-#imprimimos el resultado para ver que la funcion esta correctamente implementada
-print(formatear_tiempo(3.5))
-"""
+
 # Solo se ejecuta si corres utils.py directamente, no al importarlo desde main.py
 if __name__ == "__main__":
+    # Mandamos llamar la funcion calcular_distancia 
+    # imprimimos el resultado con 2 decimales
     resultado = calcular_distancia()
     print(f"{resultado:.2f} km.")
 
