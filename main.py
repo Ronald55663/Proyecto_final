@@ -4,6 +4,8 @@
 # ==========================================
 
 import sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
 sys.stdout.reconfigure(encoding='utf-8')
 from api import obtener_coordenadas
 from ciudad import Ciudad
@@ -25,8 +27,9 @@ print("Gracias, vales mil nunca cambies.\n")
 def mostrar_menu(unidad_actual):
     print("\n***MENU DE OPCIONES***")
     print("1. Calcular la distancia y tiempo entre dos ciudades")
-    print(f"2. Cambiar unidad preferida (actual: {unidad_actual})")
-    print("3. Salir")
+    print("2. Calcular diferencia horaria entre dos ciudades")
+    print(f"3. Cambiar unidad preferida (actual: {unidad_actual})")
+    print("4. Salir")
 
 #Creamos la funcion para pedir y guardar la unidad que el usuario escogio y asegurarnos que escribio algo valido.
 def pedir_unidad():
@@ -140,12 +143,14 @@ def calcular_viaje(unidad_preferida):
         datos_origen["pais"],
         datos_origen["lat"],
         datos_origen["lon"],
+        datos_origen.get("timezone", "UTC"),
     )
     destino = Ciudad(
         datos_destino["nombre"],
         datos_destino["pais"],
         datos_destino["lat"],
         datos_destino["lon"],
+        datos_destino.get("timezone", "UTC"),
     )
 
     # Verificamos si origen y destino tienen exactamente las mismas coordenadas
@@ -162,6 +167,76 @@ def calcular_viaje(unidad_preferida):
         distancia_km = origen.distancia_a(destino)
 
     mostrar_resumen(origen, destino, distancia_km, unidad_preferida)
+
+#Esta funcion es para consultar ciudades y mostrar la diferencia horaria.
+def extension_diferencia_horaria():
+    ciudad_origen = pedir_ciudad("origen")
+    pais_origen = pedir_pais("origen")
+    ciudad_destino = pedir_ciudad("destino")
+    pais_destino = pedir_pais("destino")
+
+    print("\nConsultando zonas horarias...")
+
+    try:
+        datos_origen = obtener_coordenadas(ciudad_origen, pais_origen)
+        if datos_origen is None:
+            print(f"Ciudad no encontrada: '{ciudad_origen}, {pais_origen}'.")
+            return
+
+        datos_destino = obtener_coordenadas(ciudad_destino, pais_destino)
+        if datos_destino is None:
+            print(f"Ciudad no encontrada: '{ciudad_destino}, {pais_destino}'.")
+            return
+    except ConnectionError as error:
+        print(f"Error de red al consultar zonas horarias: {error}")
+        return
+
+    origen = Ciudad(
+        datos_origen["nombre"],
+        datos_origen["pais"],
+        datos_origen["lat"],
+        datos_origen["lon"],
+        datos_origen.get("timezone", "UTC"),
+    )
+    destino = Ciudad(
+        datos_destino["nombre"],
+        datos_destino["pais"],
+        datos_destino["lat"],
+        datos_destino["lon"],
+        datos_destino.get("timezone", "UTC"),
+    )
+
+    diferencia = origen.diferencia_horaria_con(destino)
+    if diferencia is None:
+        print("No se pudo calcular la diferencia horaria para las zonas indicadas.")
+        return
+
+    # Hora local actual en ambas ciudades
+    ahora_utc = datetime.now(ZoneInfo("UTC"))
+    try:
+        hora_origen = ahora_utc.astimezone(ZoneInfo(origen.timezone)).strftime("%H:%M") 
+        hora_destino = ahora_utc.astimezone(ZoneInfo(destino.timezone)).strftime("%H:%M")
+        print(f"\nHora local en {origen.nombre}:  {hora_origen} ({origen.timezone})")
+        print(f"Hora local en {destino.nombre}: {hora_destino} ({destino.timezone})")
+
+        #.strftime("%H:%M"): convierte la fecha y hora en un texto con el formato que queremos
+        # %H representa las horas en formato de 24 horas y %M representa los minutos
+    
+    except Exception:
+        pass
+
+    horas_abs = abs(diferencia)
+    texto_horas = "1 hora" if horas_abs == 1 else f"{horas_abs:g} horas"
+
+    # abs() representa las horas en valor absoluto, quitando el signo negativo del numero
+    # y despues con el if mostramos un mensaje diferente si es menor, mayor o igual a la zona horaria origen
+
+    if diferencia > 0:
+        print(f"Diferencia horaria: {destino.nombre} está {texto_horas} por delante de {origen.nombre}.")
+    elif diferencia < 0:
+        print(f"Diferencia horaria: {destino.nombre} está {texto_horas} por detrás de {origen.nombre}.")
+    else:
+        print(f"Diferencia horaria: {destino.nombre} tiene la misma hora que {origen.nombre}.")
 
 def main():
     
@@ -183,9 +258,14 @@ def main():
                 # Red de seguridad para evitar que un error inesperado cierre el programa
                 print(f"Ocurrió un error inesperado: {error}")
         elif opcion == "2":
+            try:
+                extension_diferencia_horaria()
+            except Exception as error:
+                print(f"Ocurrió un error inesperado en diferencia horaria: {error}")
+        elif opcion == "3":
             unidad_preferida = pedir_unidad()
             print(f"Unidad actualizada a: {unidad_preferida}")
-        elif opcion == "3":
+        elif opcion == "4":
             print("¡Gracias por usar nuestro programa! ¡Esperamos sea de tu agrado!")
             break
         else:
